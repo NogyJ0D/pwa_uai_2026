@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, startTransition } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { Product } from '../types/product';
 
@@ -6,29 +6,45 @@ export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    startTransition(() => {
       setLoading(true);
-      try {
-        const response = await fetch(`https://dummyjson.com/products/${id}`);
-        const data: Product = await response.json();
-        setProduct(data);
-      } catch (error) {
-        console.error('Error fetching product:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setError(null);
+      setSelectedImage(0);
+    });
 
-    fetchProduct();
+    fetch(`https://dummyjson.com/products/${id}`)
+      .then(res => {
+        if (!res.ok) {
+          startTransition(() => setProduct(null));
+          return null;
+        }
+        return res.json() as Promise<Product>;
+      })
+      .then(data => {
+        if (data) {
+          startTransition(() => setProduct(data));
+        }
+      })
+      .catch(() => startTransition(() => setError('Ocurrió un error al cargar el producto. Intente nuevamente.')))
+      .finally(() => startTransition(() => setLoading(false)));
   }, [id]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-500 text-sm">Cargando...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-600 text-sm">{error}</p>
       </div>
     );
   }
