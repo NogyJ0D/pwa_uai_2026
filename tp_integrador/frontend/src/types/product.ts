@@ -1,52 +1,23 @@
-export interface Review {
-  rating: number;
-  comment: string;
-  date: string;
-  reviewerName: string;
-  reviewerEmail: string;
-}
-
-export interface Dimensions {
-  width: number;
-  height: number;
-  depth: number;
-}
-
-export interface Meta {
-  createdAt: string;
-  updatedAt: string;
-  barcode: string;
-  qrCode: string;
+export interface Category {
+  id: number;
+  name: string;
 }
 
 export interface Product {
   id: number;
-  title: string;
-  description: string;
-  category: string;
+  name: string;
+  description: string | null;
   price: number;
-  discountPercentage: number;
+  image: string | null;
+  brand: string | null;
   rating: number;
   stock: number;
-  tags: string[];
-  brand: string;
-  sku: string;
-  weight: number;
-  dimensions: Dimensions;
-  warrantyInformation: string;
-  shippingInformation: string;
-  availabilityStatus: string;
-  reviews: Review[];
-  returnPolicy: string;
-  minimumOrderQuantity: number;
-  meta: Meta;
-  thumbnail: string;
-  images: string[];
+  category: Category;
 }
 
 export interface ProductsResponse {
   products: Product[];
   total: number;
-  skip: number;
+  page: number;
   limit: number;
 }

@@ -1,16 +1,32 @@
 interface ProductFiltersProps {
   categories: string[];
   selectedCategory: string;
+  brands: string[];
+  selectedBrand: string;
+  priceMin: string;
+  priceMax: string;
   filtersOpen: boolean;
   onCategoryChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onBrandChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onPriceMinChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onPriceMaxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onApplyFilters: () => void;
   onToggleFilters: () => void;
 }
 
 export default function ProductFilters({
   categories,
   selectedCategory,
+  brands,
+  selectedBrand,
+  priceMin,
+  priceMax,
   filtersOpen,
   onCategoryChange,
+  onBrandChange,
+  onPriceMinChange,
+  onPriceMaxChange,
+  onApplyFilters,
   onToggleFilters,
 }: ProductFiltersProps) {
   return (
@@ -54,14 +70,16 @@ export default function ProductFilters({
             <input
               type="number"
               placeholder="Min"
+              value={priceMin}
+              onChange={onPriceMinChange}
               className="w-full border border-gray-300 rounded text-xs p-1"
-              disabled
             />
             <input
               type="number"
               placeholder="Max"
+              value={priceMax}
+              onChange={onPriceMaxChange}
               className="w-full border border-gray-300 rounded text-xs p-1"
-              disabled
             />
           </div>
         </div>
@@ -70,12 +88,24 @@ export default function ProductFilters({
           <label className="block text-xs font-medium text-gray-700 mb-1">
             Marca
           </label>
-          <select className="w-full border border-gray-300 rounded text-xs p-1.5" disabled>
-            <option>Seleccionar...</option>
+          <select
+            value={selectedBrand}
+            onChange={onBrandChange}
+            className="w-full border border-gray-300 rounded text-xs p-1.5"
+          >
+            <option value="">Todas</option>
+            {brands.map((brand) => (
+              <option key={brand} value={brand}>
+                {brand}
+              </option>
+            ))}
           </select>
         </div>
 
-        <button className="w-full bg-gray-800 text-white text-xs py-1.5 rounded hover:bg-gray-700 disabled:opacity-50" disabled>
+        <button
+          onClick={onApplyFilters}
+          className="w-full bg-gray-800 text-white text-xs py-1.5 rounded hover:bg-gray-700"
+        >
           Aplicar
         </button>
       </div>
